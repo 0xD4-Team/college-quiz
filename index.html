@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>كـويـز | اختبار أساسيات الكمبيوتر</title>
+  <meta name="description" content="اختبار إلكتروني تفاعلي في أساسيات الكمبيوتر: تصحيح فوري، مؤقت ذكي، مراجعة مفصلة وشهادة درجة قابلة للطباعة.">
+  <meta name="theme-color" content="#0b1020">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%237c6cff'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='white'%3E%E2%8C%98%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="bg-orbs" aria-hidden="true">
+  <span class="orb orb-1"></span><span class="orb orb-2"></span><span class="orb orb-3"></span>
+</div>
+
+<div id="app">
+
+  <!-- ===================== شاشة البداية ===================== -->
+  <section id="screen-start" class="screen active" aria-label="شاشة البداية">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-icon">⌘</span>
+        <div><strong>كـويـز</strong><small>منصة الاختبار الذكي</small></div>
+      </div>
+      <div class="top-actions">
+        <span class="top-badge">✓ تصحيح فوري 100%</span>
+        <button id="teacher-open" class="top-teacher">👩‍🏫 لوحة المدرس</button>
+      </div>
+    </header>
+
+    <div class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">مشروع الكلية • اختبار إلكتروني</span>
+        <h1>اختبر معلوماتك<br><span>في أساسيات الكمبيوتر</span></h1>
+        <p class="lead">أسئلة بسيطة، تصحيح تلقائي فوري، تقرير مفصّل لكل إجابة، وشهادة درجة جاهزة للطباعة.</p>
+        <div class="feature-grid">
+          <div class="feature"><span class="feature-icon">⏱️</span><b>مؤقت ذكي</b><small>تسليم تلقائي عند انتهاء الوقت</small></div>
+          <div class="feature"><span class="feature-icon">🎯</span><b>ترتيب عشوائي</b><small>كل محاولة مختلفة عن السابقة</small></div>
+          <div class="feature"><span class="feature-icon">📊</span><b>تقرير كامل</b><small>إجابتك + الإجابة الصحيحة + السبب</small></div>
+          <div class="feature"><span class="feature-icon">🏆</span><b>شهادة درجة</b><small>طباعتها أو حفظها كملف PDF</small></div>
+        </div>
+      </div>
+
+      <form id="start-form" class="card start-card" novalidate>
+        <h2>ابدأ الاختبار</h2>
+        <p class="muted">اكتب اسمك ثم اختر عدد الأسئلة.</p>
+
+        <label class="field">
+          <span>اسم الطالب / الطالبة</span>
+          <input id="student-name" type="text" maxlength="40" autocomplete="name" placeholder="مثال: محمد أحمد" required>
+          <small id="name-error" class="error-text"></small>
+        </label>
+
+        <label class="field">
+          <span>عدد الأسئلة والوقت</span>
+          <select id="question-count">
+            <option value="10">10 أسئلة — 10 دقائق</option>
+            <option value="15" selected>15 سؤالاً — 15 دقيقة</option>
+            <option value="20">20 سؤالاً — 20 دقيقة</option>
+          </select>
+        </label>
+
+        <div class="info-box">
+          <span>💡</span>
+          <p>يمكنك تغيير إجابتك في أي وقت، وترك أي سؤال بدون إجابة. ستظهر درجتك فور التسليم.</p>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">ابدأ الآن <span aria-hidden="true">←</span></button>
+        <p class="tiny">بالبدء يُفعّل المؤقت فوراً. يمكنك العودة للسؤال في أي وقت قبل التسليم.</p>
+      </form>
+    </div>
+
+    <div id="resume-banner" class="resume-banner hidden">
+      <div><b>لديك محاولة غير مكتملة.</b><small id="resume-info"></small></div>
+      <div class="resume-actions">
+        <button id="resume-btn" class="btn btn-small btn-primary">متابعة المحاولة</button>
+        <button id="discard-btn" class="btn btn-small btn-ghost">البدء من جديد</button>
+      </div>
+    </div>
+
+    <section class="history card">
+      <div class="section-head">
+        <h3>محاولاتك السابقة</h3>
+        <button id="clear-history" class="link-btn">مسح السجل</button>
+      </div>
+      <div id="history-list" class="history-list"><p class="muted">لا توجد محاولات بعد. ابدأ أول اختبار!</p></div>
+    </section>
+
+    <footer class="footer">صُنع كمشروع كليوي · يعمل بدون إنترنت · لا يجمع أي بيانات شخصية</footer>
+  </section>
+
+  <!-- ===================== شاشة الاختبار ===================== -->
+  <section id="screen-quiz" class="screen" aria-label="شاشة الاختبار">
+    <header class="quiz-top">
+      <div class="brand small">
+        <span class="brand-icon">⌘</span>
+        <div><strong>كـويـز</strong><small id="quiz-name">طالب</small></div>
+      </div>
+      <div class="quiz-meta">
+        <span class="meta-chip" id="question-count-label">15 سؤالاً</span>
+        <span class="timer" id="timer" role="timer" aria-label="الوقت المتبقي">15:00</span>
+      </div>
+      <button id="exit-quiz" class="icon-btn" title="العودة للبداية" aria-label="العودة للبداية">✕</button>
+    </header>
+
+    <div class="progress-area">
+      <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+      <span id="progress-label" class="progress-label">1 / 15</span>
+    </div>
+
+    <div class="quiz-layout">
+      <main class="question-card card">
+        <div class="q-head">
+          <span id="q-category" class="chip">أساسيات</span>
+          <button id="flag-btn" class="flag-btn" aria-pressed="false">🚩 <span>تحديد للمراجعة</span></button>
+        </div>
+        <div class="q-number">السؤال <span id="q-index">1</span> من <span id="q-total">15</span></div>
+        <h2 id="q-text">نص السؤال</h2>
+        <div id="options" class="options" role="group" aria-label="الإجابات"></div>
+        <div class="q-foot">
+          <span id="answer-hint">اختر إجابة واحدة</span>
+          <span class="keys-tip">اختصارات: ١–٤ للاختيار · ← → للتنقل</span>
+        </div>
+      </main>
+
+      <aside class="navigator card">
+        <div class="nav-head"><h3>خريطة الأسئلة</h3><span id="answered-count">0 / 15</span></div>
+        <div id="nav-grid" class="nav-grid"></div>
+        <div class="legend">
+          <span><i class="dot answered"></i> مُجاب</span>
+          <span><i class="dot current"></i> الحالي</span>
+          <span><i class="dot flagged"></i> للمراجعة</span>
+          <span><i class="dot empty"></i> لم يُجب</span>
+        </div>
+      </aside>
+    </div>
+
+    <div class="quiz-actions">
+      <button id="prev-btn" class="btn btn-ghost">السابق</button>
+      <div class="submit-wrap">
+        <span id="unanswered-note" class="muted tiny"></span>
+        <button id="submit-btn" class="btn btn-primary">تسليم الاختبار ✓</button>
+      </div>
+      <button id="next-btn" class="btn btn-ghost">التالي</button>
+    </div>
+  </section>
+
+  <!-- ===================== شاشة النتيجة ===================== -->
+  <section id="screen-result" class="screen" aria-label="شاشة النتيجة">
+    <div class="result-hero card">
+      <div class="score-ring" id="score-ring">
+        <div class="score-inner"><strong id="score-value">0</strong><span>%</span></div>
+      </div>
+      <div class="result-copy">
+        <span class="eyebrow" id="result-eyebrow">✅ تم التصحيح تلقائياً</span>
+        <h1 id="result-title">ممتاز!</h1>
+        <p id="result-sub" class="lead"></p>
+        <div id="cloud-status" class="cloud-status"></div>
+        <div class="result-stats">
+          <div><b id="stat-correct">0</b><span>إجابة صحيحة</span></div>
+          <div><b id="stat-wrong">0</b><span>إجابة خاطئة</span></div>
+          <div><b id="stat-skipped">0</b><span>بدون إجابة</span></div>
+          <div><b id="stat-time">0:00</b><span>الوقت المستغرق</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-actions">
+      <button id="review-btn" class="btn btn-primary">مراجعة الإجابات</button>
+      <button id="print-btn" class="btn btn-outline">🖨️ طباعة الشهادة</button>
+      <button id="restart-btn" class="btn btn-ghost">إعادة الاختبار</button>
+    </div>
+
+    <section id="review-section" class="card review hidden">
+      <div class="review-head">
+        <h2>المراجعة المفصّلة</h2>
+        <div class="filters" role="group" aria-label="تصفية المراجعة">
+          <button class="filter-btn active" data-filter="all">الكل</button>
+          <button class="filter-btn" data-filter="correct">الصحيحة</button>
+          <button class="filter-btn" data-filter="wrong">الخاطئة</button>
+        </div>
+      </div>
+      <div id="review-list"></div>
+    </section>
+
+    <section id="certificate" class="certificate" aria-label="شهادة الدرجة">
+      <div class="cert-border">
+        <div class="cert-top">شهادة إتمام اختبار</div>
+        <h2>منصة كـويـز التعليمية</h2>
+        <p class="cert-text">تشهد المنصة بأنّ الطالب / الطالبة</p>
+        <h3 id="cert-name">……………………</h3>
+        <p class="cert-text">قد أتمّ اختبار <b>أساسيات الكمبيوتر</b> وحصل على الدرجة</p>
+        <div class="cert-grade"><span id="cert-score">0</span> % — <span id="cert-label">ممتاز</span></div>
+        <div class="cert-meta"><span>التاريخ: <b id="cert-date"></b></span><span>عدد الأسئلة: <b id="cert-count"></b></span></div>
+        <div class="cert-sign">الإدارة<span>................................</span></div>
+      </div>
+    </section>
+
+    <footer class="footer">الدرجة محفوظة محلياً على هذا الجهاز — فعّل Supabase لمزامنة كل الطلبة</footer>
+  </section>
+
+  <!-- ===================== لوحة المدرس ===================== -->
+  <section id="screen-teacher" class="screen" aria-label="لوحة المدرس">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-icon">👩‍🏫</span>
+        <div><strong>لوحة المدرس</strong><small>متابعة درجات الطلبة</small></div>
+      </div>
+      <button id="teacher-close" class="btn btn-ghost btn-small">العودة للرئيسية</button>
+    </header>
+
+    <div id="teacher-login" class="card login-card">
+      <span class="eyebrow">وضع المدرس</span>
+      <h1>تقرير الدرجات</h1>
+      <p id="teacher-mode-note" class="lead"></p>
+      <form id="teacher-login-form">
+        <label class="field"><span>البريد الإلكتروني</span><input id="teacher-email" type="email" autocomplete="username" placeholder="teacher@example.com" required></label>
+        <label class="field"><span>كلمة المرور</span><input id="teacher-password" type="password" autocomplete="current-password" required></label>
+        <button type="submit" class="btn btn-primary btn-block">دخول اللوحة ←</button>
+        <small id="teacher-error" class="error-text"></small>
+      </form>
+      <div class="login-sep"><span>أو</span></div>
+      <button id="teacher-local-btn" class="btn btn-outline btn-block">عرض نتائج هذا الجهاز فقط</button>
+      <p class="tiny muted" style="margin-top:14px">كلمة مرور المدرس تُدار من Supabase Auth، مش مخزّنة في الملفات.</p>
+    </div>
+
+    <div id="teacher-dashboard" class="hidden">
+      <div class="dash-head">
+        <div><span class="eyebrow" id="dash-source">الوضع المحلي</span><h1>نتائج الطلبة</h1></div>
+        <div class="dash-actions">
+          <button id="refresh-results" class="btn btn-ghost btn-small">⟳ تحديث</button>
+          <button id="export-csv" class="btn btn-outline btn-small">⬇ تنزيل CSV</button>
+          <button id="clear-results" class="btn btn-ghost btn-small danger">مسح الكل</button>
+        </div>
+      </div>
+
+      <div class="dash-stats">
+        <div class="card dash-stat"><b id="dash-count">0</b><span>عدد المحاولات</span></div>
+        <div class="card dash-stat"><b id="dash-avg">0%</b><span>متوسط الدرجات</span></div>
+        <div class="card dash-stat"><b id="dash-max">0%</b><span>أعلى درجة</span></div>
+        <div class="card dash-stat"><b id="dash-pass">0%</b><span>نسبة النجاح (≥60)</span></div>
+      </div>
+
+      <div class="card chart-card">
+        <div class="section-head"><h3>توزيع التقديرات</h3><span id="chart-total" class="muted tiny"></span></div>
+        <div id="grade-chart" class="grade-chart"></div>
+      </div>
+
+      <div class="card table-card">
+        <div class="section-head"><h3>تفاصيل النتائج</h3><span id="table-count" class="muted tiny"></span></div>
+        <div class="table-scroll">
+          <table class="results-table">
+            <thead><tr><th>الطالب</th><th>الدرجة</th><th>التقدير</th><th>الصحيح</th><th>الوقت</th><th>التاريخ</th></tr></thead>
+            <tbody id="results-body"></tbody>
+          </table>
+        </div>
+        <p id="teacher-status" class="muted tiny"></p>
+      </div>
+    </div>
+
+    <footer class="footer">اللوحة تعرض البيانات حسب مصدرها: سحابة Supabase أو تخزين هذا الجهاز</footer>
+  </section>
+
+</div>
+
+<dialog id="submit-dialog" class="modal">
+  <div class="modal-icon">📝</div>
+  <h2 id="dialog-title">تأكيد التسليم</h2>
+  <p id="dialog-msg"></p>
+  <div class="modal-actions">
+    <button id="dialog-cancel" class="btn btn-ghost">الاستمرار في الإجابة</button>
+    <button id="dialog-confirm" class="btn btn-primary">تسليم الآن ✓</button>
+  </div>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="js/questions.js"></script>
+<script src="js/config.js"></script>
+<script src="js/cloud.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
